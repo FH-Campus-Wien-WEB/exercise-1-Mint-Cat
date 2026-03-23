@@ -18,8 +18,53 @@
             xhr.onload = function () {
                 const bodyElement = document.querySelector("body")
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
+		            /* Part 2: Build the HTML elements here and append them to the body */
+                    const headerOne = document.createElement("h1")
+                    headerOne.innerHTML = "Movies!"
+                    bodyElement.append(headerOne)
+
+                    const movieList = JSON.parse(xhr.responseText)
+
+                    for (const movie of movieList) {
+                       /* const movieOne = {
+                            "Title": movie.Title,
+                            "Release": new Date(movie.Release),
+                            "Runtime": movie.Runtime,
+                            "Genres": movie.Genres,
+                            "Directors":movie.Directors,
+                            "Writers":movie.Writers,
+                            "Actors":movie.Actors,
+                            "Plot": movie.Plot,
+                            "Poster":movie.Poster,
+                            "Metascore":movie.Metascore,
+                            "imdbRating": movie.imdbRating
+                        }*/
+
+                        const div = document.createElement("div")
+
+                        const headerTwo = document.createElement("h2")
+                        headerTwo.innerHTML = movie.Title
+
+                        const info = document.createElement("p")
+                        let date = new Date(movie.Released);
+                        let timeHour = parseInt(movie.Runtime/60)
+                        let timeMinute = (movie.Runtime - timeHour*60)
+                        info.innerHTML ="" +
+                            "Relased on "
+                            + date.toDateString()
+                            + " • "
+                            + "Runtime is for "
+                            + timeHour + "h "
+                            + timeMinute
+                            + "min "
+
+                        div.append(headerTwo, info)
+                        bodyElement.append(div)
+
+
+                    }
+
+                    //bodyElement.append(JSON.parse(xhr.responseText))
                 } else {
                     bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
