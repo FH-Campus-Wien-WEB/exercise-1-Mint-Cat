@@ -7,6 +7,55 @@
     <title>Movies!</title>
     <style>
         /* Part 3: Your styling goes here */
+        body {
+            background-color: #1a1b26;
+            color: #a9b1d6;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 1rem auto;
+            text-align: center;
+        }
+
+        #contentBody{
+            display: flex;
+        }
+
+        .movieCard {
+            background-color: #24283b;
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0.6;
+        }
+
+        .movieCard:hover {
+            transform: translateY(-10px);
+           /* transform: translateX(10px);*/
+            transition: transform 0.2s;
+            opacity: 1;
+            background-color: #2c3147;
+
+        }
+
+        .movieCard img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .movieCard h2 {
+            color: #bb9af7;
+        }
+
+
+        span {
+            margin-left: 1rem;
+        }
+
     </style>
     <script>
         function reverseString(s) {
@@ -17,27 +66,34 @@
             const xhr = new XMLHttpRequest()
             xhr.onload = function () {
                 const bodyElement = document.querySelector("body")
+
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */
+                    /* Part 2: Build the HTML elements here and append them to the body */
                     const headerOne = document.createElement("h1")
                     headerOne.innerHTML = "Movies!"
-                    bodyElement.append(headerOne)
+                    const contentBody = document.createElement("div")
+                    contentBody.setAttribute("id", "contentBody")
+                    bodyElement.append(headerOne, contentBody)
 
                     const movieList = JSON.parse(xhr.responseText)
 
                     for (const movie of movieList) {
                         const div = document.createElement("div")
-
+                        div.className = "movieCard"
                         const headerTwo = document.createElement("h2")
                         headerTwo.innerHTML = movie.Title
 
+                        const genres = document.createElement("p")
+                        genres.innerHTML = movie.Genres
 
+                        const image = document.createElement("img")
+                        image.src = movie.Poster
 
                         const info = document.createElement("p")
                         let date = new Date(movie.Released);
-                        let timeHour = parseInt(movie.Runtime/60)
-                        let timeMinute = (movie.Runtime - timeHour*60)
-                        info.innerHTML ="" +
+                        let timeHour = parseInt(movie.Runtime / 60)
+                        let timeMinute = (movie.Runtime - timeHour * 60)
+                        info.innerHTML = "" +
                             "Relased on "
                             + date.toDateString()
                             + " • "
@@ -46,15 +102,93 @@
                             + timeMinute
                             + "min "
 
+                        const description = document.createElement("p")
+                        description.innerHTML = movie.Plot
 
+                        const headerDir = document.createElement("h3")
+                        headerDir.innerHTML = "Directors"
+                        const directorsList = document.createElement("ul")
+                        for (let director of movie.Directors) {
+                            const item = document.createElement("li")
+                            item.innerHTML = director
+                            directorsList.append(item)
+                        }
 
-                        div.append(headerTwo, info)
-                        bodyElement.append(div)
+                        const headerWr = document.createElement("h3")
+                        headerWr.innerHTML = "Writers"
+                        const writerList = document.createElement("ul")
+                        for (let writers of movie.Writers) {
+                            const item = document.createElement("li")
+                            item.textContent = writers
+                            writerList.append(item)
+                        }
 
+                        const headerAc = document.createElement("h3")
+                        headerAc.innerHTML = "Actors"
+                        const actorList = document.createElement("ul")
+                        for (let actors of movie.Actors) {
+                            const item = document.createElement("li")
+                            item.textContent = actors
+                            actorList.append(item)
+                        }
+
+                        const metaScore = document.createElement("h3")
+                        metaScore.innerHTML = "MetaScore"
+                        const score = document.createElement("p")
+                        const meta = parseInt(movie.Metascore/10)
+                        let star1 = ""
+                        for (let i = 1; i <= meta; i++) {
+                                star1 += "★ "
+                        }
+                        for (let j = meta; j < 10; j++) {
+                                star1 += "✩ "
+                        }
+
+                        score.innerHTML = star1
+                            + "( "
+                            + movie.Metascore
+                            + " / 100 )"
+
+                        const imdScore = document.createElement("h3")
+                        imdScore.innerHTML = "ImdB Rating"
+                        const imd = document.createElement("p")
+                        const rat = parseInt(movie.imdbRating)
+                        let star2 = ""
+                        for (let i = 1; i <= rat; i++) {
+                            star2 += "★ "
+                        }
+                        for (let j = rat; j < 10; j++) {
+                            star2 += "✩ "
+                        }
+
+                        imd.innerHTML = star2
+                            + "( "
+                            + movie.imdbRating
+                            + " / 10 )"
+
+                        div.append(headerTwo,
+                            genres,
+                            image,
+                            info,
+                            description,
+                            headerDir,
+                            directorsList,
+                            headerWr,
+                            writerList,
+                            headerAc,
+                            actorList,
+                            metaScore,
+                            score,
+                            imdScore,
+                            imd
+                        )
+
+                        const span = document.createElement("span")
+                        contentBody.append(div,span)
+
+                        bodyElement.append(contentBody)
 
                     }
-
-                    //bodyElement.append(JSON.parse(xhr.responseText))
                 } else {
                     bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
